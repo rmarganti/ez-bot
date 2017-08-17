@@ -1,0 +1,26 @@
+{
+  "name": "ez-bot",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "author": "Ryan Marganti",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rmarganti/ez-bot"
+  },
+  "scripts": {
+    "start": "node ./dist/index.js",
+    "dev": "nodemon ./dist/index.js",
+    "tsc": "tsc",
+    "tsc:watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@types/dotenv": "^4.0.0",
+    "botkit": "^0.5.7",
+    "dotenv": "^4.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0",
+    "typescript": "^2.4.2"
+  }
+}

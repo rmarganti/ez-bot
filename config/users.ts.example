@@ -1,0 +1,6 @@
+const config:{ [index:string] : string } = {
+    'user1_name': 'thumbsup',
+    'user2_name': 'pizza',
+};
+
+export default config;
