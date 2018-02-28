@@ -1,42 +1,46 @@
 import * as dotenv from 'dotenv';
 import { slackbot } from 'botkit';
 
-import config from '../config/users';
-import { messageInterface, userInterface } from './types';
-
 dotenv.config();
 
-const controller = slackbot({ debug: false });
-controller.spawn({ token: process.env.TOKEN }).startRTM();
+const config = require('../config.json');
 
-let users = new Map<string, userInterface>();
+const controller = slackbot({ debug: true });
+controller.spawn({ token: <string>process.env.TOKEN }).startRTM();
 
-controller.hears('.*', ['direct_message', 'ambient'], (bot: any, message: messageInterface) => {
-    if (users.has(message.user)) {
-        addReaction(bot, message, users.get(message.user));
-        return;
-    }
-
-    bot.api.users.info({ user: message.user }, (err: Error, response: any) => {
-        const user = response.user;
-        users.set(message.user, user);
-        addReaction(bot, message, user);
-    });
+controller.on('rtm_close', function(bot, err) {
+    console.log(err);
+    bot.startRTM();
 });
 
-function addReaction(bot: any, message: messageInterface, user: userInterface) {
-    if (!config[user.name]) {
-        console.error('No emoji configured for user:', user.name);
-        return;
-    }
 
-    bot.api.reactions.add({
-        timestamp: message.ts,
-        channel: message.channel,
-        name: config[user.name],
-    }, (err: Error) => {
-        if (err) {
-            bot.botkit.log('Failed to send emoji:', err);
+/**
+ * List triggers
+ */
+
+controller.hears('^triggered$', ['direct_message', 'ambient'], (bot, message) => {
+    const triggers = Object.keys(config)
+        .map(trigger => '`' + trigger + '`')
+        .join(', ');
+
+        bot.reply(message, triggers);
+});
+
+/**
+ * Respond to triggers
+ */
+controller.hears('.*', ['direct_message', 'ambient'], (bot, message) => {
+    Object.keys(config).forEach(trigger => {
+        if (typeof message.text !== 'string') {
+            return;
+        }
+
+        const escaped = trigger.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regEx = new RegExp(`^${escaped}$`);
+
+        if (regEx.test(message.text)) {
+            bot.reply(message, config[trigger]);
+            return;
         }
     });
-}
+});
