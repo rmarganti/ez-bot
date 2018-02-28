@@ -1,12 +1,11 @@
-import * as dotenv from 'dotenv';
 import { slackbot } from 'botkit';
-
-dotenv.config();
 
 const config = require('../config.json');
 
+console.log(process.env);
+
 const controller = slackbot({ debug: true });
-controller.spawn({ token: <string>process.env.TOKEN }).startRTM();
+controller.spawn({ token: <string>process.env.EZ_BOT_TOKEN }).startRTM();
 
 controller.on('rtm_close', function(bot, err) {
     console.log(err);
