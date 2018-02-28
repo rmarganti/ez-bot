@@ -12,8 +12,4 @@ Simple Slack responder
 ## Docker
 
 1. Follow steps 1-3 above.
-2. `docker build -t <whatever_name_you_choose> .`
-3. `docker run <your_new_container>`
-
-> NOTE: The Docker image has not been built in a secure manner and should not be used in a non-secure environment. It should not be pushed to a public repo.
-
+2. `docker compose up`
